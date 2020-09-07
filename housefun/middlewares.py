@@ -7,7 +7,9 @@ from scrapy import signals
 from selenium import webdriver
 # useful for handling different item types with a single interface
 from itemadapter import is_item, ItemAdapter
-
+import time
+from scrapy.http.response.html import HtmlResponse
+from selenium.webdriver.common.by import By
 class HousefunSpiderMiddleware:
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the spider middleware does not modify the
@@ -101,3 +103,40 @@ class HousefunDownloaderMiddleware:
 
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)
+
+
+class SeleniumHousefunSpiderMiddleware(object):
+    def __init__(self):
+        self.driver = webdriver.Chrome(executable_path=r"F:\Workspace\JackRabbit\Myproject\HouseFun\housefun\chromedriver.exe")
+        
+    def process_request(self, request, spider):# 若此處返回response , 則不會走到downloader , 會直接返回
+        print("="*30 )
+        print("in SeleniumHousefunSpiderMiddleware")
+        self.driver.get(request.url)
+        response_list = []
+        index = 1
+          #睡一秒  讓Ajax去抓資料
+        while True:
+            time.sleep(1.5)
+            response_list.append(self.get_source_page(request))
+            button = self.driver.find_element_by_link_text("›")
+            if index < 5 :
+                print("button : ", button)
+                index = index +1
+                self.driver.execute_script("PM({})".format(index))
+            else:
+                break
+        return response_list
+        # return self.get_source_page(request)
+    def get_source_page(self,request):
+        source = self.driver.page_source
+        # print("="*30 )
+        # print("source", source )
+        response = HtmlResponse(url = request.url, body=source, request=request , encoding='utf-8')
+        return response
+
+    def process_exception(self, request, exception, spider):
+        print("="*30)
+        print(exception)
+        print(request)
+        print("call process_exception")
