@@ -10,6 +10,7 @@ from itemadapter import is_item, ItemAdapter
 import time
 from scrapy.http.response.html import HtmlResponse
 from selenium.webdriver.common.by import By
+
 class HousefunSpiderMiddleware:
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the spider middleware does not modify the
@@ -106,27 +107,28 @@ class HousefunDownloaderMiddleware:
 
 
 class SeleniumHousefunSpiderMiddleware(object):
+    index = 1
     def __init__(self):
         self.driver = webdriver.Chrome(executable_path=r"F:\Workspace\JackRabbit\Myproject\HouseFun\housefun\chromedriver.exe")
         
     def process_request(self, request, spider):# 若此處返回response , 則不會走到downloader , 會直接返回
         print("="*30 )
         print("in SeleniumHousefunSpiderMiddleware")
+        print("in index : {}".format(SeleniumHousefunSpiderMiddleware.index))
+        if SeleniumHousefunSpiderMiddleware.index > 5 :
+            return None
         self.driver.get(request.url)
-        response_list = []
-        index = 1
+
+        # response_list = []
           #睡一秒  讓Ajax去抓資料
-        while True:
-            time.sleep(1.5)
-            response_list.append(self.get_source_page(request))
-            button = self.driver.find_element_by_link_text("›")
-            if index < 5 :
-                print("button : ", button)
-                index = index +1
-                self.driver.execute_script("PM({})".format(index))
-            else:
-                break
-        return response_list
+        time.sleep(1.5)
+        self.driver.execute_script("PM({})".format(SeleniumHousefunSpiderMiddleware.index))
+        time.sleep(1.5)
+        button = self.driver.find_element_by_link_text("›")
+        print("button : ", button)
+        SeleniumHousefunSpiderMiddleware.index = SeleniumHousefunSpiderMiddleware.index+1
+        return self.get_source_page(request)
+
         # return self.get_source_page(request)
     def get_source_page(self,request):
         source = self.driver.page_source

@@ -15,3 +15,4 @@ class HousefunItem(scrapy.Item):
     connect = scrapy.Field()
     size = scrapy.Field()
     content = scrapy.Field()
+    detial = scrapy.Field()

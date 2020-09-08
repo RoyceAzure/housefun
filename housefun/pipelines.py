@@ -73,15 +73,18 @@ class HousefunTwistedPipeline(object):
     def Insertsql(self):
         if not self._Insertsql:
             self._Insertsql = """
-            insert into renthouse (title, address, price, connect, size, content) values (%s,%s, %s, %s, %s,%s);
+            insert into renthouse (title, address, price, connect, size, content,detial) values (%s,%s, %s, %s, %s,%s, %s);
             """
         print("self._Insertsql : {}".format(self._Insertsql))
         return self._Insertsql
     def process_item(self, item, spider):
+        print("="*30)
+        print("in pipline")
+        print("item :{}".format(item))
         defer = self.dbpol.runInteraction(self.Insert_item, item) #將要執行的異步function帶入
         defer.addErrback(self.handle_error, item, spider)
     def Insert_item(self, cursor , item):
-        cursor.execute(self.Insertsql,(item['title'],item['address'],item['price'],item['connect'],item['size'],item['content'])) 
+        cursor.execute(self.Insertsql,(item['title'],item['address'],item['price'],item['connect'],item['size'],item['content'], item['detial'])) 
         return item
     def handle_error(self, error, item, spider):
         print("="*10 + "error" + "="*10)
