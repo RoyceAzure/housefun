@@ -108,33 +108,37 @@ class HousefunDownloaderMiddleware:
 
 class SeleniumHousefunSpiderMiddleware(object):
     index = 1
+    
     def __init__(self):
         self.driver = webdriver.Chrome(executable_path=r"F:\Workspace\JackRabbit\Myproject\HouseFun\housefun\chromedriver.exe")
-        
+        self._limit_page = None
     def process_request(self, request, spider):# 若此處返回response , 則不會走到downloader , 會直接返回
         print("="*30 )
         print("in SeleniumHousefunSpiderMiddleware")
         print("in index : {}".format(SeleniumHousefunSpiderMiddleware.index))
-        if SeleniumHousefunSpiderMiddleware.index > 5 :
-            return None
+        print("in self._limit_page : {}".format(self._limit_page))
+        keep_going = False
+
         self.driver.get(request.url)
 
         # response_list = []
           #睡一秒  讓Ajax去抓資料
         time.sleep(1.5)
+        if SeleniumHousefunSpiderMiddleware.index <= self.limit_page :
+            keep_going = True
         self.driver.execute_script("PM({})".format(SeleniumHousefunSpiderMiddleware.index))
-        time.sleep(1.5)
-        button = self.driver.find_element_by_link_text("›")
-        print("button : ", button)
+        time.sleep(2.5)
+        # button = self.driver.find_element_by_link_text("›")
+        # print("button : ", button)
+        
+
         SeleniumHousefunSpiderMiddleware.index = SeleniumHousefunSpiderMiddleware.index+1
-        return self.get_source_page(request)
+        return self.get_source_page(request,keep_going)
 
         # return self.get_source_page(request)
-    def get_source_page(self,request):
+    def get_source_page(self,request,keep_going):
         source = self.driver.page_source
-        # print("="*30 )
-        # print("source", source )
-        response = HtmlResponse(url = request.url, body=source, request=request , encoding='utf-8')
+        response = HtmlResponse(url = request.url, body=source, request=request , encoding='utf-8', meta = {'continue' : keep_going})    
         return response
 
     def process_exception(self, request, exception, spider):
@@ -142,3 +146,11 @@ class SeleniumHousefunSpiderMiddleware(object):
         print(exception)
         print(request)
         print("call process_exception")
+    @property
+    def limit_page(self):
+        if not self._limit_page:
+            print("no self._limit_page")
+            self._limit_page = self.driver.find_element(By.XPATH, '//span[@id = "PageCount"]').text.split('/')[1]
+            self._limit_page = int(self._limit_page)
+            print("after self._limit_page : {}".format(self._limit_page))
+            return self._limit_page

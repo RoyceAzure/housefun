@@ -31,12 +31,8 @@ class HousefunPipeline:
         self._sql = None
         self._Insertsql = None
     def process_item(self, item, spider):
-        self.cursor.execute(self.Insertsql,(item['title'],item['address'],item['price'],item['connect'],item['size'],item['content'])) 
+        self.cursor.execute(self.Insertsql,(item['title'],item['address'],item['price'],item['connect'],item['size'],item['content'],item['detial'])) 
         self.conn.commit()
-        myresult = self.cursor.fetchall()
-        for x in myresult:
-            print(x)
-        return item
     @property
     def sql(self):
         if not self._sql:
@@ -50,7 +46,7 @@ class HousefunPipeline:
     def Insertsql(self):
         if not self._Insertsql:
             self._Insertsql = """
-            insert into renthouse (title, address, price, connect, size, content) values (%s,%s, %s, %s, %s,%s);
+            insert into renthouse (title, address, price, connect, size, content, detial) values (%s,%s, %s, %s, %s,%s, %s);
             """
         print("self._Insertsql : {}".format(self._Insertsql))
         return self._Insertsql

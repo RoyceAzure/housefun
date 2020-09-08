@@ -64,7 +64,7 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-#    'housefun.pipelines.HousefunPipeline': 300
+   # 'housefun.pipelines.HousefunPipeline': 300
    'housefun.pipelines.HousefunTwistedPipeline': 300
 }
 
