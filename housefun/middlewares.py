@@ -121,7 +121,7 @@ class SeleniumHousefunSpiderMiddleware(object):
 
         self.driver.get(request.url)
 
-        # response_list = []
+# response_list = []
           #睡一秒  讓Ajax去抓資料
         time.sleep(1.5)
         if SeleniumHousefunSpiderMiddleware.index <= self.limit_page :
