@@ -10,17 +10,20 @@ import pymysql
 #使用adbap 提供的connectpool 異步寫入SQL
 from twisted.enterprise import adbapi
 from pymysql import cursors
+from dotenv import find_dotenv,load_dotenv
+import os
 
+load_dotenv(find_dotenv())
 
 class HousefunPipeline:
     def __init__(self):
         dbparams = {
-            'host' : '127.0.0.1',
-            'port' : 3306,
-            'user' : 'root',
-            'password' : 'MysqlJackRabbit0618',
-            'database' : 'housefun',
-            'charset' : 'utf8'
+            'host' : os.environ.get('host'),
+            'port' : int(os.environ.get('port')),
+            'user' : os.environ.get('root'),
+            'password' : os.environ.get('password'),
+            'database' : os.environ.get('database'),
+            'charset' : os.environ.get('charset')
         }
         self.conn = pymysql.connect(**dbparams)
         if self.conn:
@@ -54,12 +57,12 @@ class HousefunPipeline:
 class HousefunTwistedPipeline(object):
     def __init__(self):
         dbparams = {
-            'host' : '127.0.0.1',
-            'port' : 3306,
-            'user' : 'root',
-            'password' : 'MysqlJackRabbit0618',
-            'database' : 'housefun',
-            'charset' : 'utf8',
+            'host' : os.environ.get('host'),
+            'port' : int(os.environ.get('port')),
+            'user' : os.environ.get('root'),
+            'password' : os.environ.get('password'),
+            'database' : os.environ.get('database'),
+            'charset' : os.environ.get('charset'),
             "cursorclass" : cursors.DictCursor  #一班cursor返回 list, 這裡應是返回dict
         }
         self.dbpol = adbapi.ConnectionPool('pymysql', **dbparams) #根據不同DB lib 建立連接池 (建立對應的conn物件)

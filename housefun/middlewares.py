@@ -10,7 +10,10 @@ from itemadapter import is_item, ItemAdapter
 import time
 from scrapy.http.response.html import HtmlResponse
 from selenium.webdriver.common.by import By
+from dotenv import find_dotenv,load_dotenv
+import os
 
+load_dotenv(find_dotenv())
 class HousefunSpiderMiddleware:
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the spider middleware does not modify the
@@ -110,7 +113,7 @@ class SeleniumHousefunSpiderMiddleware(object):
     index = 1
     
     def __init__(self):
-        self.driver = webdriver.Chrome(executable_path=r"F:\Workspace\JackRabbit\Myproject\HouseFun\housefun\chromedriver.exe")
+        self.driver = webdriver.Chrome(executable_path=os.environ.get('driver_path'))
         self._limit_page = None
     def process_request(self, request, spider):# 若此處返回response , 則不會走到downloader , 會直接返回
         print("="*30 )
@@ -153,4 +156,4 @@ class SeleniumHousefunSpiderMiddleware(object):
             self._limit_page = self.driver.find_element(By.XPATH, '//span[@id = "PageCount"]').text.split('/')[1]
             self._limit_page = int(self._limit_page)
             print("after self._limit_page : {}".format(self._limit_page))
-            return self._limit_page
+        return self._limit_page
