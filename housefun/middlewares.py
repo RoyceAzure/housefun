@@ -10,10 +10,9 @@ from itemadapter import is_item, ItemAdapter
 import time
 from scrapy.http.response.html import HtmlResponse
 from selenium.webdriver.common.by import By
-from dotenv import find_dotenv,load_dotenv
-import os
+from enviroment import config
 
-load_dotenv(find_dotenv())
+
 class HousefunSpiderMiddleware:
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the spider middleware does not modify the
@@ -66,7 +65,7 @@ class HousefunDownloaderMiddleware:
     # scrapy acts as if the downloader middleware does not modify the
     # passed objects.
     def __init__(self):
-        self.driverPath = "F:/Workspace/JackRabbit/Myproject/HouseFun/housefun/chromedriver.exe"
+        self.driverPath = config._driver_path
     @classmethod
     def from_crawler(cls, crawler):
         # This method is used by Scrapy to create your spiders.
@@ -113,7 +112,7 @@ class SeleniumHousefunSpiderMiddleware(object):
     index = 1
     
     def __init__(self):
-        self.driver = webdriver.Chrome(executable_path=os.environ.get('driver_path'))
+        self.driver = webdriver.Chrome(executable_path=config._driver_path)
         self._limit_page = None
     def process_request(self, request, spider):# 若此處返回response , 則不會走到downloader , 會直接返回
         print("="*30 )

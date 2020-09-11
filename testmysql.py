@@ -1,16 +1,10 @@
 from itemadapter import ItemAdapter
 import pymysql
-
+# from enviroment.config import *
+from enviroment import config
 class HousefunPipeline:
     def __init__(self):
-        dbparams = {
-            'host' : '127.0.0.1',
-            'port' : 3306,
-            'user' : 'root',
-            'password' : 'MysqlJackRabbit0618',
-            'database' : 'housefun',
-            'charset' : 'utf8'
-        }
+        dbparams = config.dbparams
         self.conn = pymysql.connect(**dbparams)
         if self.conn:
             print("DB init success")
@@ -44,6 +38,7 @@ class HousefunPipeline:
         print("self._Insertsql : {}".format(self._Insertsql))
         return self._Insertsql
 try:
+    print(config.dbparams)
     test = HousefunPipeline()
     test.process_item({
         'title' : "test",

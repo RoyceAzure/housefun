@@ -1,3 +1,6 @@
 *.exe
 .vscode
 *.pyc
+*.ipynb
+test.py
+.env
