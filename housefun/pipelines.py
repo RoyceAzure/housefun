@@ -12,7 +12,7 @@ from twisted.enterprise import adbapi
 from pymysql import cursors
 import os
 from enviroment import config
-
+import csv
 
 class HousefunPipeline:
     def __init__(self):
@@ -73,3 +73,29 @@ class HousefunTwistedPipeline(object):
         print("="*10 + "error" + "="*10)
         print(error)
         print("="*10 + "error" + "="*10)
+
+class HousefunCsvPipeline(object):
+    def __init__(self):
+        self.saveDir = os.path.join(config._BaseDir,config._SaveDir)
+        self.savePath = config._saveCsvPath
+        print(self.saveDir)
+        print(self.savePath)
+        if not os.path.exists(self.saveDir):
+            os.mkdir(self.saveDir)
+        if not os.path.exists(self.savePath):
+            with open(self.savePath,"w",encoding="utf-8",newline='') as f:
+                header = ["title","address","price","connect","size","content","detial"]
+                csvWriter = csv.writer(f,delimiter=',')
+                csvWriter.writerow(header)
+    def process_item(self, item, spider):
+        with open(self.savePath,"a",encoding="utf-8",newline='') as f:
+            csvWriter = csv.writer(f,delimiter=',')
+            title = item['title']
+            address = item['address']
+            price = item['price']
+            connect = item['connect']
+            size = item['size']
+            content = item['content']
+            detial = item['detial']
+            writeList = [title,address,price,connect,size,content,detial]
+            csvWriter.writerow(writeList)

@@ -65,7 +65,8 @@ DOWNLOADER_MIDDLEWARES = {
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    # 'housefun.pipelines.HousefunPipeline': 300
-   'housefun.pipelines.HousefunTwistedPipeline': 300
+   # 'housefun.pipelines.HousefunTwistedPipeline': 300
+   'housefun.pipelines.HousefunCsvPipeline':300
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
