@@ -4,3 +4,5 @@
 *.ipynb
 test.py
 .env
+*.csv
+*.log
